@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Task Manager</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- SortableJS for drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <!-- jsPDF library for PDF export -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+    <div class="sidebar-header">
+        <h1>Task Manager</h1>
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <div class="user-profile">
+        <div class="avatar">
+            <i class="fas fa-user"></i>
+        </div>
+        <span class="user-name">Your Name</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="active">
+                <a href="#"><i class="fas fa-home"></i>Dashboard</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Empty sidebar footer -->
+    <div class="sidebar-footer">
+        <p>
+            "Turn chaos into clarity by writing it down and working it through."
+        </p>
+    </div>
+</aside>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <!-- Added search-input class to match JS references -->
+                    <input type="text" placeholder="Search tasks..." id="search-task" class="search-input">
+                </div>
+
+                <div class="header-actions">
+
+
+
+
+
+
+                    <!-- Added missing buttons for advanced features -->
+                    <button class="stats-btn">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="button-text">Stats</span>
+                    </button>
+
+                    <button class="export-btn">
+                        <i class="fas fa-download"></i>
+                        <span class="button-text">Export</span>
+                    </button>
+
+                    <button class="import-btn">
+                        <i class="fas fa-upload"></i>
+                        <span class="button-text">Import</span>
+                    </button>
+
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+
+
+                </div>
+            </header>
+
+
+            <section class="quick-add">
+                <form id="add-task-form">
+                    <div class="quick-add-input">
+                        <input type="text" id="task-description" placeholder="Add a new task..." required>
+                    </div>
+                    <div class="quick-add-options">
+                        <select id="task-priority" required>
+                            <option value="">Priority</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+
+                        <input type="date" id="task-due-date">
+                        <!-- Added class for keyboard shortcut reference -->
+                        <button type="submit" class="btn-add add-task-btn">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                </form>
+
+            </section>
+
+            <section class="tasks-container">
+
+                <!-- High Priority Tasks -->
+                <div class="priority-section">
+                    <div class="priority-header priority-high">
+                        <i class="fas fa-flag"></i>
+                        <h2>High Priority</h2>
+                    </div>
+                    <div id="empty-high" class="empty-priority">
+                        <p>No high priority tasks</p>
+                    </div>
+                    <div class="task-list-wrapper">
+                        <!-- Added data-status attribute for drag & drop -->
+                        <ul id="high-priority-tasks" class="task-list" data-priority="high" data-status="active">
+                            <!-- Tasks will be added here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Medium Priority Tasks -->
+                <div class="priority-section">
+                    <div class="priority-header priority-medium">
+                        <i class="fas fa-flag"></i>
+                        <h2>Medium Priority</h2>
+                    </div>
+                    <div id="empty-medium" class="empty-priority">
+                        <p>No medium priority tasks</p>
+                    </div>
+                    <div class="task-list-wrapper">
+                        <!-- Added data-status attribute for drag & drop -->
+                        <ul id="medium-priority-tasks" class="task-list" data-priority="medium" data-status="active">
+                            <!-- Tasks will be added here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Low Priority Tasks -->
+                <div class="priority-section">
+                    <div class="priority-header priority-low">
+                        <i class="fas fa-flag"></i>
+                        <h2>Low Priority</h2>
+                    </div>
+                    <div id="empty-low" class="empty-priority">
+                        <p>No low priority tasks</p>
+                    </div>
+                    <div class="task-list-wrapper">
+                        <!-- Added data-status attribute for drag & drop -->
+                        <ul id="low-priority-tasks" class="task-list" data-priority="low" data-status="active">
+                            <!-- Tasks will be added here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="priority-section completed-section">
+                    <div class="priority-header priority-completed">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Completed Tasks</h2>
+                        <button id="toggle-completed" class="btn-toggle">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div id="empty-completed" class="empty-priority">
+                        <p>No completed tasks</p>
+                    </div>
+                    <div class="task-list-wrapper" id="completed-wrapper">
+                        <!-- Added data-status attribute for drag & drop -->
+                        <ul id="completed-tasks" class="task-list" data-status="completed">
+                            <!-- Completed tasks will be added here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <div class="main-progress-section">
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <div>Today's Progress</div>
+                        <div class="progress-percentage" id="progress-percentage">0%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="completed-count">0</span>/<span id="total-count">0</span> tasks completed
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Action Button for quick add -->
+    <button class="floating-add-btn" id="floating-add-btn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Templates for JS to use -->
+    <template id="task-item-template">
+        <li class="task-item " draggable="true">
+            <div class="task-card">
+                <div class="task-card-header">
+                    <div class="task-priority-indicator"></div>
+                    <div class="task-project-tag"></div>
+                    <div class="task-actions">
+                        <button class="btn-complete"><i class="fas fa-check"></i></button>
+                        <button class="btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="task-card-body">
+                    <p class="task-description"></p>
+                </div>
+                <div class="task-card-footer">
+                    <div class="task-due-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span></span>
+                    </div>
+                    <div class="task-drag-handle">
+                        <i class="fas fa-grip-lines"></i>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </template>
+
+    <!-- JavaScript Files -->
+    <script src="app.js"></script>
+</body>
+
+</html>
